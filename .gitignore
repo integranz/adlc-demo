@@ -1,18 +1,4 @@
-# .NET
-**/bin/
-**/obj/
-*.user
-.vs/
-# Node
-**/node_modules/
-**/dist/
-# local
-.env
-.env.*
-!.env.example
-.DS_Store
-
-# added by adlc
+# adlc: local-only artefacts (guard hooks also block committing these)
 .adlc/approvals/
 *.tfstate
 *.tfstate.*
@@ -22,9 +8,13 @@ tfplan*
 *.tfplan
 .terraform/
 .terraform.lock.hcl.tmp
+.env
+.env.*
+!.env.example
 *.pem
 *.key
 node_modules/
 dist/
 bin/
 obj/
+.DS_Store

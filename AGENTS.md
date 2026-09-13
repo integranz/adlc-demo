@@ -2,7 +2,7 @@
 
 Demo monorepo (.NET 8 API + React/Vite frontend) delivered by the adlc plugin
 
-This repository is delivered by the **adlc** Claude Code plugin (0.2.0). This file is the routing page for humans and agents: what is here, which skill to run, which rules apply. Procedures live in the plugin's skills, not here.
+This repository is delivered by the **adlc** Claude Code plugin (0.3.0). This file is the routing page for humans and agents: what is here, which skill to run, which rules apply. Procedures live in the plugin's skills, not here.
 
 ## Layout
 | App | Path | Kind | Stack | Port | Health |
@@ -14,6 +14,7 @@ This repository is delivered by the **adlc** Claude Code plugin (0.2.0). This fi
 | Path | Purpose |
 |---|---|
 | `.adlc/config.yaml` | Delivery options and app inventory (source of truth for every adlc skill) |
+| `.adlc/SETUP.md` | One-time human prerequisites: GitHub secrets/variables, environment, Entra app registration with OIDC, state storage, RBAC |
 | `.adlc/evidence/` | Verification records per deployed tag |
 | `infra/foundation/` | Shared cloud resources (registry, key vault, identity, logs). Applied by a human after `/adlc:plan`; never by an agent alone |
 | `infra/app/` | Compute for the apps + image tags. Applied only by the CD workflow behind the environment approval |
