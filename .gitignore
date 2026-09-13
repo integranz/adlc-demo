@@ -18,3 +18,7 @@ dist/
 bin/
 obj/
 .DS_Store
+
+# .NET IDE artefacts
+*.user
+.vs/
