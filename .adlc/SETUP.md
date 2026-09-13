@@ -28,6 +28,8 @@ gh api -X PUT repos/integranz/adlc-demo/environments/dev \
 JSON
 ```
 
+> Steps 3–5 are automated by `bash .adlc/setup-azure.sh` (dry run) / `--apply` (idempotent, human-only). The commands below are what it runs.
+
 ## 3. Entra ID app registration for CI/CD (OIDC, no client secret)
 ```
 az account set --subscription <subscription id>
