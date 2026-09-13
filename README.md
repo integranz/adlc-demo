@@ -5,7 +5,7 @@ Demo monorepo delivered end to end by the [adlc](https://github.com/integranz/ad
 | App | Path | Stack | Port | Health |
 |---|---|---|---|---|
 | api | `apps/api` | .NET 8 minimal API (`Api.sln`: `src/Api`, `tests/Api.Tests`) | 8080 | `/health` returns `{status, version, startedAt}` |
-| web | `apps/web` | React 19 + Vite 8, served by nginx in the container | 8080 | `/` |
+| web | `apps/web` | React 19 + Vite 8; served by nginx in the container once dockerized (dev server: 5173) | 8080 | `/` |
 
 Versioning: [Nerdbank.GitVersioning](https://github.com/dotnet/Nerdbank.GitVersioning) (`version.json`). CI stamps the version into both images (`-p:InformationalVersion` for the API, `VITE_APP_VERSION` for the web) so a deployment can be verified against its tag.
 

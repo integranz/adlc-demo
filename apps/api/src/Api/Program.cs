@@ -10,7 +10,10 @@ var version = Assembly.GetEntryAssembly()?.GetCustomAttribute<AssemblyInformatio
 var startedAt = DateTimeOffset.UtcNow;
 
 app.MapGet("/", () => Results.Ok(new { service = "adlc-demo-api", version }));
-app.MapGet("/health", () => Results.Ok(new HealthResponse("ok", version, startedAt)));
+// /health is probed directly on the API container; /api/health is what the frontend reaches through its /api proxy.
+var health = () => Results.Ok(new HealthResponse("ok", version, startedAt));
+app.MapGet("/health", health);
+app.MapGet("/api/health", health);
 app.MapGet("/api/greeting", (string? name) => Results.Ok(new { message = $"Hello, {(string.IsNullOrWhiteSpace(name) ? "adlc" : name.Trim())}!", version }));
 
 app.Run();

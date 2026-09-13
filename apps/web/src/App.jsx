@@ -6,7 +6,7 @@ export default function App() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Same-origin: nginx (container) or the Vite dev proxy forwards /api and /health to the API app.
+    // Same-origin: nginx (container) or the Vite dev proxy forwards /api/* to the API app, which serves /api/health.
     fetch("/api/health").then(async (r) => {
       if (!r.ok) throw new Error(`API responded ${r.status}`);
       setHealth(await r.json());

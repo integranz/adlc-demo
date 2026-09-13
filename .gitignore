@@ -11,3 +11,20 @@
 .env.*
 !.env.example
 .DS_Store
+
+# added by adlc
+.adlc/approvals/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+tfplan*
+*.tfplan
+.terraform/
+.terraform.lock.hcl.tmp
+*.pem
+*.key
+node_modules/
+dist/
+bin/
+obj/
