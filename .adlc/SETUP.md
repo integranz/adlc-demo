@@ -22,11 +22,13 @@ gh variable set DOCKERHUB_USERNAME -R integranz/adlc-demo --body "<docker hub us
 ## 2. GitHub → Settings → Environments
 Create `dev` with **Required reviewers** (yourself at least). The CD job runs with `environment: dev`; approval happens before `terraform apply` of `infra/app`.
 ```
-gh api -X PUT repos/integranz/adlc-demo/environments/dev \
-  --input - <<'JSON'
-{ "reviewers": [ { "type": "User", "id": <your numeric GitHub user id: gh api user --jq .id> } ] }
+gh api -X PUT repos/integranz/adlc-demo/environments/dev --input - <<JSON
+{ "reviewers": [ { "type": "User", "id": $(gh api user --jq .id) } ],
+  "deployment_branch_policy": { "protected_branches": false, "custom_branch_policies": true } }
 JSON
+gh api -X POST repos/integranz/adlc-demo/environments/dev/deployment-branch-policies -f name=main -f type=branch
 ```
+The branch policy limits deployments to `main`; CD is dispatched on that branch with an immutable tag input.
 
 > Steps 3–5 are automated by `bash .adlc/setup-azure.sh` (dry run) / `--apply` (idempotent, human-only). The commands below are what it runs.
 
