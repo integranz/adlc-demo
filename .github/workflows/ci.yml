@@ -104,6 +104,13 @@ jobs:
       - name: Log in to the container registry
         if: env.IS_RELEASE == 'true'
         run: az acr login --name acradlcdemo
+      - name: Refuse to overwrite an existing tag (tags are immutable)
+        if: env.IS_RELEASE == 'true'
+        run: |
+          if az acr manifest show -r acradlcdemo -n "${{ matrix.repository }}:${{ needs.version.outputs.version }}" >/dev/null 2>&1; then
+            echo "::error::${{ matrix.repository }}:${{ needs.version.outputs.version }} already exists in acradlcdemo. Tags are immutable: bump the version (new commit) instead of re-running a release build."
+            exit 1
+          fi
       - name: Build${{ env.IS_RELEASE == 'true' && ' and push' || '' }} ${{ matrix.app }}
         id: build
         uses: docker/build-push-action@v7
@@ -166,8 +173,12 @@ jobs:
         run: |
           dotnet tool install -g nbgv >/dev/null
           git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          nbgv tag
-          git push origin "v${{ needs.version.outputs.version }}"
+          if git ls-remote --exit-code --tags origin "v${{ needs.version.outputs.version }}" >/dev/null 2>&1; then
+            echo "tag v${{ needs.version.outputs.version }} already exists; nothing to do"
+          else
+            nbgv tag
+            git push origin "v${{ needs.version.outputs.version }}"
+          fi
       - name: Summary
         run: |
           echo "## Release adlc-demo ${{ needs.version.outputs.version }}" >> "$GITHUB_STEP_SUMMARY"
