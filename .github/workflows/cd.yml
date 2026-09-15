@@ -56,8 +56,12 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       - name: Every app image must exist for this tag
         run: |
-          az acr manifest show -r acradlcdemo -n "adlc-demo/api:$IMAGE_TAG" --query digest -o tsv | sed 's/^/  api: /' || { echo "::error::adlc-demo/api:$IMAGE_TAG not found in acradlcdemo"; exit 1; }
-          az acr manifest show -r acradlcdemo -n "adlc-demo/web:$IMAGE_TAG" --query digest -o tsv | sed 's/^/  web: /' || { echo "::error::adlc-demo/web:$IMAGE_TAG not found in acradlcdemo"; exit 1; }
+          d=$(az acr repository show -n acradlcdemo --image "adlc-demo/api:$IMAGE_TAG" --query digest -o tsv 2>/dev/null || true)
+          [ -n "$d" ] || { echo "::error::adlc-demo/api:$IMAGE_TAG not found in acradlcdemo"; exit 1; }
+          echo "  api: $d"
+          d=$(az acr repository show -n acradlcdemo --image "adlc-demo/web:$IMAGE_TAG" --query digest -o tsv 2>/dev/null || true)
+          [ -n "$d" ] || { echo "::error::adlc-demo/web:$IMAGE_TAG not found in acradlcdemo"; exit 1; }
+          echo "  web: $d"
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_wrapper: false

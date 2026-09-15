@@ -15,6 +15,6 @@ locals {
     project     = local.project
     environment = local.environment
     managed_by  = "terraform"
-    generator   = "adlc 0.8.2"
+    generator   = "adlc"
   }
 }
