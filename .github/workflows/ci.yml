@@ -58,6 +58,11 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            apps/web/package-lock.json
+      - name: install web dependencies
+        run: npm ci --prefix apps/web --no-audit --no-fund
       - name: test api
         run: dotnet test apps/api
       - name: test web
