@@ -2,7 +2,7 @@
 
 Demo monorepo (.NET 8 API + React/Vite frontend) delivered by the adlc plugin
 
-This repository is delivered by the **adlc** Claude Code plugin (0.9.0). This file is the routing page for humans and agents: what is here, which skill to run, which rules apply. Procedures live in the plugin's skills, not here.
+This repository is delivered by the **adlc** Claude Code plugin (0.10.1). This file is the routing page for humans and agents: what is here, which skill to run, which rules apply. Procedures live in the plugin's skills, not here.
 
 ## Layout
 | App | Path | Kind | Stack | Port | Health |
@@ -32,7 +32,7 @@ This repository is delivered by the **adlc** Claude Code plugin (0.9.0). This fi
 | runner | `github-actions` — GitHub Actions |
 | versioning | `nbgv` — Nerdbank.GitVersioning |
 | branching | `trunk` — Trunk-based (main + short-lived branches + PRs) |
-| tracker | `jira` — Jira Cloud (official Atlassian remote MCP; Standard plan or higher) |
+| tracker | `jira` — Jira Cloud (Atlassian Rovo MCP Server; Standard plan or higher) |
 | secret_store | `azure-key-vault` — Azure Key Vault |
 | base_image | `dhi` — Docker Hardened Images (dhi.io |
 
@@ -70,7 +70,7 @@ Skills come from the plugin (`adlc@adlc-marketplace`, source `integranz/adlc`), 
 ## Systems of record and tool policy
 | Need | Use | Not |
 |---|---|---|
-| Tickets | `/adlc:ticket` (tracker MCP: Jira Cloud (official Atlassian remote MCP; Standard plan or higher)) | manual browser updates |
+| Tickets | `/adlc:ticket` (tracker MCP: Jira Cloud (Atlassian Rovo MCP Server; Standard plan or higher)) | manual browser updates |
 | Pipeline status, logs, trigger CD | GitHub MCP via `/adlc:deploy` / `/adlc:verify` | `gh` for writes |
 | Cloud inventory for verification | Azure MCP (read-only) or `az … show/list` | Azure MCP for changes |
 | Infrastructure changes | Terraform in `infra/*` under the guard hooks | portal, `az … create`, Azure MCP writes |
