@@ -14,7 +14,7 @@
 # Failure is loud: a missing plugin would leave the environment without guardrails, so this script fails the Build.
 set -uo pipefail
 PLUGIN_REPO="https://github.com/integranz/slipway"
-PLUGIN_VERSION="1.6.0"
+PLUGIN_VERSION="1.7.0"
 LOCAL="${CURSOR_PLUGINS_LOCAL:-$HOME/.cursor/plugins/local}/slipway"
 STATE="${CURSOR_USER_SHIM_DIR:-$HOME/.cursor/slipway}"
 SRC="$STATE/src"
