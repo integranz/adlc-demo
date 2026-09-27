@@ -2,7 +2,7 @@
 
 Demo monorepo (.NET 8 API + React/Vite frontend) delivered by the slipway plugin
 
-This repository is delivered by the **slipway** Claude Code plugin (1.1.1). This file is the routing page for humans and agents: what is here, which skill to run, which rules apply. Procedures live in the plugin's skills, not here.
+This repository is delivered by the **slipway** plugin (Claude Code and Cursor, 1.5.0). This file is the routing page for humans and agents: what is here, which skill to run, which rules apply. Procedures live in the plugin's skills, not here.
 
 ## Layout
 | App | Path | Kind | Stack | Port | Health |
@@ -16,7 +16,6 @@ This repository is delivered by the **slipway** Claude Code plugin (1.1.1). This
 | `.slipway/config.yaml` | Delivery options and app inventory (source of truth for every slipway skill) |
 | `.slipway/SETUP.md`, `.slipway/setup-azure.sh` | Prerequisites: what a human does (logins, Docker Hub token, MCP grant) and what `/slipway:launch` automates behind permission prompts (Entra app + OIDC, state storage, RBAC, secrets, environment, ruleset) |
 | `.slipway/.env.example` | Seed file template for local secrets; the copy `.slipway/.env` is gitignored, only ever sourced, never printed |
-| `.slipway/evidence/<app>/` | Verification records per app and deployed tag |
 | `infra/foundation/` | Shared cloud resources (registry, key vault, identity, logs, Container Apps environment). Applied by a human after `/slipway:plan`; never by an agent alone |
 | `infra/apps/api/` | Compute + image tag of `api` only (own state). Applied only by `slipway-demo-api-cd` behind the environment approval |
 | `infra/apps/web/` | Compute + image tag of `web` only (own state). Applied only by `slipway-demo-web-cd` behind the environment approval |
@@ -31,8 +30,8 @@ This repository is delivered by the **slipway** Claude Code plugin (1.1.1). This
 ## Pipelines (one CI and one CD per app)
 | App | CI workflow | CD workflow | Version file | Git tag | Inputs (triggers = version pathFilters) |
 |---|---|---|---|---|---|
-| `api` | `slipway-demo-api-ci` | `slipway-demo-api-cd` | `apps/api/version.json` | `api/v<semver>` | `apps/api`, `libs/dotnet/Demo.Contracts`, `.github/workflows/slipway-demo-api-ci.yml`, `.github/workflows/slipway-demo-api-cd.yml`, `.github/workflows/_ci.yml`, `.github/workflows/_cd.yml`, `infra/apps/api`, `.dockerignore` |
-| `web` | `slipway-demo-web-ci` | `slipway-demo-web-cd` | `apps/web/version.json` | `web/v<semver>` | `apps/web`, `.github/workflows/slipway-demo-web-ci.yml`, `.github/workflows/slipway-demo-web-cd.yml`, `.github/workflows/_ci.yml`, `.github/workflows/_cd.yml`, `infra/apps/web` |
+| `api` | `slipway-demo-api-ci` | `slipway-demo-api-cd` | `apps/api/version.json` | `api/v<semver>` | `apps/api`, `libs/dotnet/Demo.Contracts`, `.github/workflows/slipway-demo-api-ci.yml`, `.github/workflows/slipway-demo-api-cd.yml`, `.github/workflows/_ci.yml`, `.github/workflows/_cd.yml`, `infra/apps/api`, `.dockerignore`, `!**/.terraform.lock.hcl` |
+| `web` | `slipway-demo-web-ci` | `slipway-demo-web-cd` | `apps/web/version.json` | `web/v<semver>` | `apps/web`, `.github/workflows/slipway-demo-web-ci.yml`, `.github/workflows/slipway-demo-web-cd.yml`, `.github/workflows/_ci.yml`, `.github/workflows/_cd.yml`, `infra/apps/web`, `!**/.terraform.lock.hcl` |
 A change to a path listed for one app only builds, versions and deploys that app; a path listed for several apps (shared inputs) triggers each of them. CD trigger: `on-ci-success`; pull-request behaviour: `always-run-gate` (see `.claude/rules/pipelines.md`).
 
 ## Delivery options chosen
@@ -52,6 +51,9 @@ A change to a path listed for one app only builds, versions and deploys that app
 | cd_approval | `in-session` — Also in the Claude Code session: after the plan summary, the agent approves the pending deployment through the GitHub API under the reviewer's own account, behind a forced permission prompt |
 | config_store | `env` — Environment variables set by Terraform from apps[].env (simplest; a change creates a new revision) |
 | database | `none` — No: the app receives its connection string from the secret store (you set the value) |
+| registry_scope | `per-repository` — Own registry, created by this repository's foundation layer (default; the resource group is the security boundary) |
+| apply_gate | `prompt` — In the session: the guard hook asks for permission with the plan summary and the human answers the prompt (Claude Code enforces it; Cursor shows its command approval, so keep auto-run off). Unattended sessions still need the token |
+| evidence_store | `release` — GitHub Release of the tag (default): CI creates the release when it tags, CD attaches the deploy outputs and smoke test, verify attaches its report; nothing is committed and the record stays next to what it verifies |
 
 Change an option with `/slipway:bootstrap`; do not edit generated files by hand to switch options.
 
@@ -77,7 +79,7 @@ Change an option with `/slipway:bootstrap`; do not edit generated files by hand 
 - slipway:dockerize — hardened multi-stage Dockerfile for one app, built and health-checked
 - slipway:plan — terraform fmt/validate/plan for one layer; never applies
 - slipway:deploy — trigger and monitor CD for an immutable tag
-- slipway:verify — falsifiable post-deploy checks; writes .slipway/evidence/<app>/<tag>.md
+- slipway:verify — falsifiable post-deploy checks; the report is attached to the GitHub Release of the tag (`<app>/v<version>`), next to the release manifest and the deploy outputs
 - slipway:ticket — epic → story → subtask tracking with read-backs and an offline queue
 - slipway:delivery-knowledge — option reference material (model-invoked)
 </available_skills>

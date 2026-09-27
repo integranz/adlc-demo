@@ -17,6 +17,7 @@ on:
       - ".github/workflows/_cd.yml"
       - "infra/apps/api/**"
       - ".dockerignore"
+      - "!**/.terraform.lock.hcl"
   workflow_dispatch:
 
 concurrency:
@@ -50,6 +51,7 @@ jobs:
             .github/workflows/_cd.yml
             infra/apps/api
             .dockerignore
+            !**/.terraform.lock.hcl
         run: |
           if [ "${{ github.event_name }}" != "pull_request" ]; then echo "run=true" >> "$GITHUB_OUTPUT"; exit 0; fi
           gh api "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --paginate --jq '.[].filename' > changed.txt
