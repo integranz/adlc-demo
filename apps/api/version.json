@@ -5,7 +5,9 @@
     "^refs/heads/main$"
   ],
   "cloudBuild": {
-    "buildNumber": { "enabled": true },
+    "buildNumber": {
+      "enabled": true
+    },
     "setVersionVariables": true
   },
   "pathFilters": [
@@ -16,7 +18,8 @@
     "/.github/workflows/_ci.yml",
     "/.github/workflows/_cd.yml",
     "/infra/apps/api",
-    "/.dockerignore"
+    "/.dockerignore",
+    ":!**/.terraform.lock.hcl"
   ],
   "release": {
     "tagName": "api/v{version}",

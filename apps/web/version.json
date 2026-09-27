@@ -5,7 +5,9 @@
     "^refs/heads/main$"
   ],
   "cloudBuild": {
-    "buildNumber": { "enabled": true },
+    "buildNumber": {
+      "enabled": true
+    },
     "setVersionVariables": true
   },
   "pathFilters": [
@@ -14,7 +16,8 @@
     "/.github/workflows/slipway-demo-web-cd.yml",
     "/.github/workflows/_ci.yml",
     "/.github/workflows/_cd.yml",
-    "/infra/apps/web"
+    "/infra/apps/web",
+    ":!**/.terraform.lock.hcl"
   ],
   "release": {
     "tagName": "web/v{version}",
